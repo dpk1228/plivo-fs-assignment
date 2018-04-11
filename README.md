@@ -95,3 +95,39 @@
  
     systemctl start freeswitch.service
     fs_cli
+    
+**Firewall Configuration in AWS Security Group**
+
+Open UDP ports
+  * SIP -> 5060
+  * RTP -> 16384-32768
+Open TCP Ports
+  * SIP -> 5060
+  * WSS -> 8081-8082
+
+**Freeswitch Configuration**
+
+External SIP IP Configuration
+> Edit conf/vanilla/vars.xml
+
+	<X-PRE-PROCESS cmd="exec-set" data="bind_server_ip=curl -s http://instance-data/latest/meta-data/public-ipv4"/>
+	<X-PRE-PROCESS cmd="exec-set" data="external_rtp_ip=curl -s http://instance-data/latest/meta-data/public-ipv4"/>
+	<X-PRE-PROCESS cmd="exec-set" data="external_sip_ip=curl -s http://instance-data/latest/meta-data/public-ipv4"/>
+
+Enable RTP ports
+> Edit conf/vanilla/autoload_configs/switch.conf.xml
+
+	<param name="rtp-start-port" value="16384"/>
+	<param name="rtp-end-port" value="32768"/>
+
+**TBD - REST API 
+
+**References**
+
+* Freeswitch Installation:
+[http://howto.lintel.in/how-to-install-freeswitch-1-6-on-debian-8-jessie/](http://howto.lintel.in/how-to-install-freeswitch-1-6-on-debian-8-jessie/)
+
+* Firewall setting and  External IP Config in freeswitch
+[https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2](https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2)
+
+
