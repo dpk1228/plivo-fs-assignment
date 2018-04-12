@@ -165,9 +165,10 @@ Enable `mod_shout`
 		export MSYS_HOME=/c/msys/1.0
 		source /usr/local/bin/virtualenvwrapper.sh
 
-* create virtual env
+* create virtual env and activate it
 
 		mkvirtualenv plivo-fs
+		workon plivo-fs
 
 * enable mod_python in freeswitch
 
@@ -180,6 +181,41 @@ Enable `mod_shout`
 
 		pip install -r rest_service/requirements
 
+**Setup uWSGI application server**
+
+Install uwsgi
+
+		pip install uwsgi flask
+
+Create the WSGI Entry Point
+
+> create wsgi.py
+
+		from myproject import application
+
+		if __name__ == "__main__":
+			application.run()
+
+Configure uWSGI
+
+> wsgi.ini
+
+Create Startup Script for wsgi
+
+> startup_scripts/plivo-fs.service
+
+**Nginx Setup**
+
+		apt-get install nginx
+
+Configuring Nginx to Proxy Requests
+
+> nginx_conf/plivo-fs
+
+Restart nginx and run the statrtup script
+
+		systemctl restart nginx
+		systemctl start plivo-fs.service
 
 **References**
 
@@ -190,5 +226,7 @@ Enable `mod_shout`
 [https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2](https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2)
 
 * Python ESL : [https://freeswitch.org/confluence/display/FREESWITCH/Python+ESL](https://freeswitch.org/confluence/display/FREESWITCH/Python+ESL)
+
+* uWsgi and Nginx Setup : [https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-14-04)
 
 
