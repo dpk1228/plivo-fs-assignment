@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI instance to serve plivo Freeswitch API
+After=network.target
+
+
+[Service]
+User=admin
+Group=www-data
+WorkingDirectory=/home/admin/rest_service
+Environment="PATH=/home/admin/.virtualenvs/plivo-fs/bin"
+ExecStart=/home/admin/.virtualenvs/plivo-fs/bin/uwsgi --ini wsgi.ini
+
+[Install]
+WantedBy=multi-user.target
