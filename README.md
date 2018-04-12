@@ -101,9 +101,12 @@
 Open UDP ports
   * SIP -> 5060
   * RTP -> 16384-32768
+  
 Open TCP Ports
   * SIP -> 5060
-  * WSS -> 8081-8082
+  * ESL -> 8081-8082
+  * HTTP -> 80
+  * HTTPS ->443
 
 **Freeswitch Configuration**
 
@@ -115,19 +118,45 @@ External SIP IP Configuration
 	<X-PRE-PROCESS cmd="exec-set" data="external_sip_ip=curl -s http://instance-data/latest/meta-data/public-ipv4"/>
 
 Enable RTP ports
-> Edit conf/vanilla/autoload_configs/switch.conf.xml
+> Edit /usr/local/freeswitch/conf/autoload_configs/switch.conf.xml
 
 	<param name="rtp-start-port" value="16384"/>
 	<param name="rtp-end-port" value="32768"/>
+	
+	
+**Enable 'mod_shout' for playing mp3 and remote audio**
+Install Depedencies 
 
-**TBD - REST API 
+	apt-get install libvorbis0a libogg0 libogg-dev libvorbis-dev
+
+> In modules.conf (source) append line
+	
+	formats/mod_sndfile
+	formats/mod_shout    <--- NEW
+
+Configure/Make:
+
+	./configure && make install
+
+Enable `mod_shout`
+ > Add in /usr/local/freeswitch/conf/autoload_configs/modules.conf.xml to add mod_shout to the list	
+
+	<load module="mod_shout"/>  
+
+ > Modify the priority of CODEC in /usr/local/freeswitch/conf/vars.xml
+
+	<X-PRE-PROCESS cmd="set" data="global_codec_prefs=PCMU"/>
+	<X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU"/>
+
 
 **References**
 
-* Freeswitch Installation:
+* Freeswitch Installation :
 [http://howto.lintel.in/how-to-install-freeswitch-1-6-on-debian-8-jessie/](http://howto.lintel.in/how-to-install-freeswitch-1-6-on-debian-8-jessie/)
 
-* Firewall setting and  External IP Config in freeswitch
+* Firewall setting and  External IP Config in freeswitch :
 [https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2](https://freeswitch.org/confluence/display/FREESWITCH/Amazon+EC2)
+
+* Python ESL : [https://freeswitch.org/confluence/display/FREESWITCH/Python+ESL](https://freeswitch.org/confluence/display/FREESWITCH/Python+ESL)
 
 
