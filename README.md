@@ -125,6 +125,7 @@ Enable RTP ports
 	
 	
 **Enable 'mod_shout' for playing mp3 and remote audio**
+
 Install Depedencies 
 
 	apt-get install libvorbis0a libogg0 libogg-dev libvorbis-dev
@@ -139,7 +140,7 @@ Configure/Make:
 	./configure && make install
 
 Enable `mod_shout`
- > Add in /usr/local/freeswitch/conf/autoload_configs/modules.conf.xml to add mod_shout to the list	
+ > Add in /usr/local/freeswitch/conf/autoload_configs/modules.conf.xml mod_shout to the list	
 
 	<load module="mod_shout"/>  
 
@@ -147,6 +148,37 @@ Enable `mod_shout`
 
 	<X-PRE-PROCESS cmd="set" data="global_codec_prefs=PCMU"/>
 	<X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU"/>
+	
+**REST API IMPLEMENTATION**
+
+* Install PIP
+
+		apt-get install python-pip
+
+* Install virtualenwrapper
+ 
+ 		pip install virtualenvwrapper
+
+* Append in .bashrc to enable virtualenv package
+	
+		export WORKON_HOME=$HOME/.virtualenvs
+		export MSYS_HOME=/c/msys/1.0
+		source /usr/local/bin/virtualenvwrapper.sh
+
+* create virtual env
+
+		mkvirtualenv plivo-fs
+
+* enable mod_python in freeswitch
+
+		make pymod
+		make pymod-install
+
+* install PIP Dependencies 
+
+> All the dependencies are in rest_service/requirements.txt
+
+		pip install -r rest_service/requirements
 
 
 **References**
