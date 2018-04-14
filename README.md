@@ -218,6 +218,8 @@ Restart nginx and run the statrtup script
 		systemctl restart nginx
 		systemctl start plivo-fs.service
 		
+**Freeswitch : Required Configuration**		
+		
 * Allow only user `1000` and `1001` to register and discard other:
 
 > Change 'default group' in /usr/local/freeswitch/conf/directory/default.xml
