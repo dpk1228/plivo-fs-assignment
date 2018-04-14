@@ -2,6 +2,7 @@ from freeswitchESL import ESL
 import sys
 import logging
 import json
+import threading
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +54,15 @@ def originate_call(dest):
         response['error'] = status[1]
 
     else:
+        uuid = status[1]
         response['message'] = 'ok'
+        t1 = threading.Thread(target=eventListener, args=(con,uuid,))
+        t1.start()
+    return response
+
+def eventListener(con, uuid) :
 
         # if call was originated then grab the uuid
-        uuid = status[1]
         logger.info("UUID : {}".format(uuid))
 
         # play remote file through shout
@@ -78,6 +84,4 @@ def originate_call(dest):
                     break
                 
 
-    con.disconnect()
-    return response
-
+        con.disconnect()
