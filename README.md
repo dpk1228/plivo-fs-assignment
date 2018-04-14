@@ -216,6 +216,30 @@ Restart nginx and run the statrtup script
 
 		systemctl restart nginx
 		systemctl start plivo-fs.service
+		
+* Allow only user `1000` and `1001` to register and discard other:
+
+> Change 'default group' in /usr/local/freeswitch/conf/directory/default.xml
+
+      <group name="default">
+        <users>
+          <!-- Only following users are allowed to register -->
+          <X-PRE-PROCESS cmd="include" data="default/1000.xml"/>
+          <X-PRE-PROCESS cmd="include" data="default/1001.xml"/>
+        </users>
+      </group>
+
+* Dialplan change to whitelist call from SIP `1000` and `1001` and blacklist other
+
+> add in default xml dialplan /usr/local/freeswitch/conf/dialplan/default.xml (priority top)
+
+    <!-- check for white list in regext expression, if matched then go to default else hangup the call -->
+    <extension name="isWhiteList">
+      <condition field="destination_number" expression="^(100[0-1])$">
+        <action application="transfer" data="$1 XML default"/>
+        <anti-action application="hangup"/>
+      </condition>
+    </extension>
 
 **References**
 
