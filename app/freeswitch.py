@@ -55,16 +55,18 @@ def originate_call(dest):
 
     else:
         uuid = status[1]
+
+        # if call was originated then grab the uuid
+        logger.info("UUID : {}".format(uuid))
         response['message'] = 'ok'
         t1 = threading.Thread(target=eventListener, args=(con,uuid,))
         t1.start()
     return response
 
 def eventListener(con, uuid) :
-
-        # if call was originated then grab the uuid
-        logger.info("UUID : {}".format(uuid))
-
+        """
+        Event listener on connection con with call job uuid
+        """
         # play remote file through shout
         con.execute('playback', _PLAY_FILE, str(uuid))
         i=0
