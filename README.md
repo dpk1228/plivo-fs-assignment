@@ -236,7 +236,7 @@ Restart nginx and run the statrtup script
     <!-- check for white list in regext expression, if matched then go to default else hangup the call -->
     <extension name="isWhiteList">
       <condition field="destination_number" expression="^(100[0-1])$">
-        <action application="transfer" data="$1 XML default"/>
+        <action application="deflect" data="${destination_number}"/>
         <anti-action application="hangup"/>
       </condition>
     </extension>
