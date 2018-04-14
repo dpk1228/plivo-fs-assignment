@@ -6,6 +6,7 @@
 * Any other SIP call or SIP registration should be rejected if other than default Users (1000,1001)
 * Using event_socket module implement REST API to make outbound call on default SIP user
 
+# Setup
 **SSH to AWS debain instance**
 
  Change permission of `fs-plivo.pem` file
@@ -229,7 +230,7 @@ Restart nginx and run the statrtup script
         </users>
       </group>
 
-* Dialplan change to whitelist call from SIP `1000` and `1001` and blacklist other
+* Extension added in dialplan to whitelist call from SIP `1000` and `1001`only and blacklist other
 
 > add in default xml dialplan /usr/local/freeswitch/conf/dialplan/default.xml (priority top)
 
