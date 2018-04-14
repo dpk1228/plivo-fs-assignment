@@ -26,9 +26,8 @@ def api_call():
 
     if dest_number:
         call_result = originate_call(dest_number)
-        result = {'message': call_result}
         response = app.response_class(
-            response = json.dumps(result),
+            response = json.dumps(call_result),
             status = 200,
             mimetype='application/json',
         )

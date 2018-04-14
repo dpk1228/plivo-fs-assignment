@@ -37,6 +37,7 @@ def originate_call(dest):
     response : 'ok' or 'error'
     """
     # get the connection object
+    response = dict()
     con = get_connection()
     if not con:
         # in no connection is created return with error
@@ -48,13 +49,35 @@ def originate_call(dest):
     status = status.get('_body').strip().split(' ')
     logger.info(status)
     if status[0] != '+OK':
-    	return "error"
+        response['message'] = 'error'
+        response['error'] = status[1]
+
     else:
+        response['message'] = 'ok'
+
         # if call was originated then grab the uuid
         uuid = status[1]
         logger.info("UUID : {}".format(uuid))
+
         # play remote file through shout
-        play_res = con.execute('playback', _PLAY_FILE, str(uuid))
+        con.execute('playback', _PLAY_FILE, str(uuid))
+        i=0
+        con.events('plain', 'all')
+
+        # need to listen the event and act accordingly
+        while(True):
+            ev = con.recvEvent();
+            if ev:
+                events = ev.getHeader("Event-Name")
+
+                # if playback completed then hangup the call  
+                if events == 'PLAYBACK_STOP' and ev.getHeader("Unique-ID") == str(uuid) :
+                    print(ev.serialize())
+                    print("Hanging up the call")
+                    con.execute('hangup','', str(uuid))
+                    break
+                
+
     con.disconnect()
-    return "ok"
+    return response
 
