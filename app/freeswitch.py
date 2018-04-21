@@ -13,9 +13,12 @@ _PWD = 'ClueCon'
 
 # originate argument
 _ORIG_ARG = "user/{} &park()" 
+#_ORIG_ARG1 = "{ignore_early_media=true,originate_timeout=60}"
+#_ORIG_ARG2 = "user/{} &playback(shout://s3.amazonaws.com/plivocloud/Trumpet.mp3)" 
 
 # remote mp3 file to play 
 _PLAY_FILE = "shout://s3.amazonaws.com/plivocloud/Trumpet.mp3"
+#_PLAY_FILE = "/usr/src/freeswitch.git/html5/verto/demo/sounds/bell_ring2.wav"
 
 
 def get_connection():
@@ -44,7 +47,9 @@ def originate_call(dest):
         # in no connection is created return with error
         return "error" 
     # api to originate call
+    print("ESL connection created")
     call = con.api("originate", _ORIG_ARG.format(dest))
+    print("Call was answered")
     call_status = call.serialize("json")
     status = json.loads(call_status)
     status = status.get('_body').strip().split(' ')
@@ -52,6 +57,7 @@ def originate_call(dest):
     if status[0] != '+OK':
         response['message'] = 'error'
         response['error'] = status[1]
+	response['status'] = 404
 
     else:
         uuid = status[1]
@@ -59,6 +65,7 @@ def originate_call(dest):
         # if call was originated then grab the uuid
         logger.info("UUID : {}".format(uuid))
         response['message'] = 'ok'
+        response['status'] = 200
         t1 = threading.Thread(target=eventListener, args=(con,uuid,))
         t1.start()
     return response
